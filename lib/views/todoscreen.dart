@@ -81,6 +81,8 @@ class TodoScreen extends StatelessWidget {
   }
 
   //modal to add todo
+
+// make common alert box for add and edit
   void showAddTodoDialogBox(BuildContext context) {
     final TextEditingController controller = TextEditingController();
 
