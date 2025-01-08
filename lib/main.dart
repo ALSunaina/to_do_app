@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todoapp/cubit/to_do_cubit.dart';
+import 'package:todoapp/views/homescreen.dart';
 import 'package:todoapp/views/todoscreen.dart';
 
 void main() {
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const TodoScreen(),
+        home: const HomeScreen(),
       ),
     );
   }
