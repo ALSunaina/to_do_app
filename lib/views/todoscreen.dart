@@ -21,8 +21,19 @@ class TodoScreen extends StatelessWidget {
           child: Column(
             children: [
               ElevatedButton(
-                  onPressed: () => showAddTodoDialogBox(context),
-                  child: const Text("Add Todo")),
+                onPressed: () {
+                  showTodoDialogBox(
+                    context: context,
+                    todoTitle: "",
+                    boxTitle: "Add To-Do",
+                    buttonText: "Add",
+                    onButtonPressed: (title) {
+                      context.read<TodoCubit>().addTodo(title);
+                    },
+                  );
+                },
+                child: const Text("Add Todo"),
+              ),
               Expanded(
                 child: BlocBuilder<TodoCubit, TodoState>(
                   builder: (context, state) {
@@ -53,7 +64,17 @@ class TodoScreen extends StatelessWidget {
                                 IconButton(
                                   icon: const Icon(Icons.edit),
                                   onPressed: () {
-                                    showEditTodoDialogBox(context, todo);
+                                    showTodoDialogBox(
+                                      context: context,
+                                      todoTitle: todo.title,
+                                      boxTitle: "Edit To-Do",
+                                      buttonText: "Save",
+                                      onButtonPressed: (title) {
+                                        context
+                                            .read<TodoCubit>()
+                                            .editTodo(todo.id, title);
+                                      },
+                                    );
                                   },
                                 ),
                                 IconButton(
@@ -80,22 +101,28 @@ class TodoScreen extends StatelessWidget {
     );
   }
 
-  //modal to add todo
-  void showAddTodoDialogBox(BuildContext context) {
-    final TextEditingController controller = TextEditingController();
+  void showTodoDialogBox({
+    required BuildContext context,
+    required String? todoTitle,
+    required String boxTitle,
+    required String buttonText,
+    required void Function(String title) onButtonPressed,
+  }) {
+    final TextEditingController controller =
+        TextEditingController(text: todoTitle);
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Add To-Do"),
+          title: Text(boxTitle),
           content: TextField(
             controller: controller,
             decoration: const InputDecoration(hintText: "Enter title"),
           ),
-           shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8), 
-        ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
           actions: [
             TextButton(
               onPressed: () {
@@ -106,53 +133,92 @@ class TodoScreen extends StatelessWidget {
             TextButton(
               onPressed: () {
                 if (controller.text.isNotEmpty) {
-                  context.read<TodoCubit>().addTodo(controller.text);
+                  onButtonPressed(controller.text);
                 }
                 Navigator.pop(context);
               },
-              child: const Text("Add"),
+              child: Text(buttonText),
             ),
           ],
         );
       },
     );
   }
-}
 
-void showEditTodoDialogBox(BuildContext context, Todo todo) {
-  final TextEditingController controller =
-      TextEditingController(text: todo.title);
+  //modal to add todo
+//   void showAddTodoDialogBox(BuildContext context) {
+//     final TextEditingController controller = TextEditingController();
 
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text("Edit To-Do"),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(hintText: "Enter new task title"),
-        ),
-         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8), 
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () {
-              if (controller.text.isNotEmpty) {
-                context.read<TodoCubit>().editTodo(todo.id, controller.text);
-              }
-              Navigator.pop(context);
-            },
-            child: const Text("Save"),
-          ),
-        ],
-      );
-    },
-  );
+//     showDialog(
+//       context: context,
+//       builder: (context) {
+//         return AlertDialog(
+//           title: const Text("Add To-Do"),
+//           content: TextField(
+//             controller: controller,
+//             decoration: const InputDecoration(hintText: "Enter title"),
+//           ),
+//            shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(8),
+//         ),
+//           actions: [
+//             TextButton(
+//               onPressed: () {
+//                 Navigator.pop(context);
+//               },
+//               child: const Text("Cancel"),
+//             ),
+//             TextButton(
+//               onPressed: () {
+//                 if (controller.text.isNotEmpty) {
+//                   context.read<TodoCubit>().addTodo(controller.text);
+//                 }
+//                 Navigator.pop(context);
+//               },
+//               child: const Text("Add"),
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
+// }
+
+// void showEditTodoDialogBox(BuildContext context, Todo todo) {
+//   final TextEditingController controller =
+//       TextEditingController(text: todo.title);
+
+//   showDialog(
+//     context: context,
+//     builder: (context) {
+//       return AlertDialog(
+//         title: const Text("Edit To-Do"),
+//         content: TextField(
+//           controller: controller,
+//           decoration: const InputDecoration(hintText: "Enter new task title"),
+//         ),
+//          shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(8),
+//         ),
+//         actions: [
+//           TextButton(
+//             onPressed: () {
+//               Navigator.pop(context);
+//             },
+//             child: const Text("Cancel"),
+//           ),
+//           TextButton(
+//             onPressed: () {
+//               if (controller.text.isNotEmpty) {
+//                 context.read<TodoCubit>().editTodo(todo.id, controller.text);
+//               }
+//               Navigator.pop(context);
+//             },
+//             child: const Text("Save"),
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }
 }
